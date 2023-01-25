@@ -1,5 +1,12 @@
 class PhotosController < ApplicationController
   before_action :set_photo, only: %i[ show edit update destroy ]
+  before_action :ensure_owner, only: [:update, :destroy, :edit]
+
+  def ensure_owner
+    if current_user != @photo.owner
+      redirect_back(fallback_location: root_url, alert: "Not allowed.")
+    end
+  end
 
   # GET /photos or /photos.json
   def index
@@ -17,6 +24,7 @@ class PhotosController < ApplicationController
 
   # GET /photos/1/edit
   def edit
+    
   end
 
   # POST /photos or /photos.json
@@ -50,11 +58,13 @@ class PhotosController < ApplicationController
 
   # DELETE /photos/1 or /photos/1.json
   def destroy
+  
     @photo.destroy
     respond_to do |format|
       format.html { redirect_back fallback_location: root_url, notice: "Photo was successfully destroyed." }
       format.json { head :no_content }
     end
+
   end
 
   private
